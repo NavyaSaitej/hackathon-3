@@ -58,11 +58,12 @@ class IngestionRouter:
 
         # Audio normalization via ffmpeg would go here in production
         model = WhisperModel("base", device="cpu", compute_type="int8")
-        segments, _ = model.transcribe(str(path), beam_size=5)
-        text = " ".join([segment.text for segment in segments])
-
-        # Explicitly delete model to free RAM
-        del model
+        try:
+            segments, _ = model.transcribe(str(path), beam_size=5)
+            text = " ".join([segment.text for segment in segments])
+        finally:
+            logger.debug("Purging faster-whisper from memory.")
+            del model
         return text
 
     @staticmethod
@@ -75,12 +76,13 @@ class IngestionRouter:
             raise ParserFailureError("Image dependencies missing.")
 
         engine = RapidOCR()
-        result, _ = engine(str(path))
-        if result:
-            text = " ".join([res[1] for res in result])
-        else:
-            text = ""
-
-        # Explicitly delete engine
-        del engine
+        try:
+            result, _ = engine(str(path))
+            if result:
+                text = " ".join([res[1] for res in result])
+            else:
+                text = ""
+        finally:
+            logger.debug("Purging RapidOCR from memory.")
+            del engine
         return text
