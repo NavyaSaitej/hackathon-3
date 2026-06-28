@@ -53,8 +53,16 @@ class LLMExtractor:
             )
 
             result_text = response["choices"][0]["message"]["content"]
+            result_text = result_text.strip()
+            if result_text.startswith("```json"):
+                result_text = result_text[7:]
+            if result_text.startswith("```"):
+                result_text = result_text[3:]
+            if result_text.endswith("```"):
+                result_text = result_text[:-3]
+                
             logger.success("LLM Extraction completed successfully.")
-            return json.loads(result_text)
+            return json.loads(result_text.strip())
 
         except Exception:
             logger.exception("Failed during LLM extraction.")
