@@ -1,5 +1,5 @@
-from src.orchestrator import process_file_offline
-from src.parsers import IngestionRouter
-from src.llm_transformer import LLMExtractor
-from src.database import save_note
+from backend.orchestrator import process_file_offline
+from backend.parsers import IngestionRouter
+from backend.llm_transformer import LLMExtractor
+from backend.database import save_note
 print("Imports successful")

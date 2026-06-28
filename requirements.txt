@@ -1,6 +1,6 @@
 # Core AI Backend
 faster-whisper==1.0.0
-llama-cpp-python==0.2.77
+ollama==0.6.2
 ffmpeg-python==0.2.0
 
 # Omni-Modal Parsers

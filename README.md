@@ -21,8 +21,8 @@ Our application seamlessly:
    - Audio is pre-processed (`ffmpeg-python`) and transcribed locally using a CTranslate2 backend (`faster-whisper`).
    - Images are scanned using CPU-optimized OCR (`rapidocr-onnxruntime`).
    - Documents are parsed using high-speed libraries (`PyMuPDF`, `python-docx`).
-4. **Transforms**: The flattened text is converted into a strict, structured JSON schema (Summaries, Action Items, Key Decisions) using an aggressively quantized Small Language Model (`Phi-3-mini`) via constrained grammar decoding.
-5. **Persists**: The extracted intelligence is saved into an encrypted SQLite database (`SQLCipher`), managed securely via `.env` keys.
+4. **Transforms**: The flattened text is converted into a strict, structured JSON schema (Summaries, Action Items, Key Decisions) using a local **Ollama** engine (`phi3` model). If Ollama is unavailable, the pipeline falls back to a 100% offline, zero-dependency Python **NLP Heuristics Engine**.
+5. **Persists**: The extracted intelligence is saved into an encrypted SQLite database (`SQLCipher`), managed securely via `.env` keys within `local_assets/`.
 
 All processing occurs sequentially with strict **manual garbage collection** to ensure a maximum memory footprint of 6GB RAM. Furthermore, the entire architecture is wrapped in **Advanced Error Tracing** (`loguru`), ensuring robust debugging capabilities in production.
 
@@ -30,8 +30,8 @@ All processing occurs sequentially with strict **manual garbage collection** to 
 
 ## ⚙️ Core Technical Constraints (Hackathon Compliance)
 This project strictly adheres to the official hackathon rubric:
-- 🚫 **CPU-First**: Absolutely no GPU/CUDA dependencies. Inference relies solely on heavily optimized C++ backends (`llama.cpp`, `whisper.cpp`) and ONNX Runtimes.
-- 📴 **Offline-First**: Guaranteed air-gap resiliency. The core pipeline is guaranteed to function flawlessly with the host machine's Wi-Fi adapters physically disabled.
+- 🚫 **CPU-First**: Absolutely no GPU/CUDA dependencies. Inference relies solely on heavily optimized local engines (`ollama`, `whisper.cpp`) and ONNX Runtimes.
+- 📴 **Offline-First**: Guaranteed air-gap resiliency. The core pipeline is guaranteed to function flawlessly with the host machine's Wi-Fi adapters physically disabled, thanks to local Ollama processing and Regex/NLP fallbacks.
 - 🔓 **Free & Open Source**: The entire codebase is licensed under **GNU GPLv3** (Strong Copyleft), ensuring maximum open-source freedom and compliance.
 
 ---
@@ -58,8 +58,8 @@ To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2
 
 | Domain | Primary Owner | Key Responsibilities |
 |--------|--------------|----------------------|
-| **AI & Core Backend** | **Member 1** | • Implement Diagnostics (`loguru`) & Omni-Modal Parsers (`whisper`, `rapidocr`, `PyMuPDF`).<br>• Enforce Garbage Collection (`gc.collect`) across backend module boundaries.<br>• Compile JSON Grammar for `llama.cpp` constrained decoding.<br>• Design the `SQLModel` encrypted schema and manage `.env` security. |
-| **CLI, UX & DevOps** | **Member 2** | • Develop the `Typer` (`src/main.py`) interactive UI presentation.<br>• Implement robust exception handling and memory cleanup.<br>• Configure local GitLab CI Runner (10+ checks) & PyInstaller executable freezing. |
+| **AI & Core Backend** | **Member 1** | • Implement Diagnostics (`loguru`) & Omni-Modal Parsers (`whisper`, `rapidocr`, `PyMuPDF`).<br>• Enforce Garbage Collection (`gc.collect`) across backend module boundaries.<br>• Build the `OllamaOrchestrator` and NLP Fallback Engine.<br>• Design the `SQLModel` encrypted schema in `local_assets/`. |
+| **CLI, UX & DevOps** | **Member 2** | • Develop the `Typer` (`frontend/cli.py`) interactive UI presentation.<br>• Implement robust exception handling and memory cleanup.<br>• Configure local GitLab CI Runner (10+ checks). |
 
 ---
 
@@ -67,18 +67,30 @@ To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2
 *(To be compiled in Phase 2)*
 
 The application is designed to be as intuitive as standard UNIX tools.
+
+### Prerequisites
+Before ingesting data, ensure your local Ollama engine has downloaded the Phi-3 model:
+```bash
+ollama pull phi3
+```
+*(If the model is missing or the server crashes, Chronicle automatically falls back to an offline Python NLP engine).*
+
+### Basic Usage
 ```bash
 # Process a meeting recording offline
-chronicle ingest confidential_meeting.mp3
+chronicle ingest local_assets/dummy_files/confidential_meeting.mp3
 
 # Process a whiteboard scan offline
-chronicle ingest architectural_diagram.png
+chronicle ingest local_assets/dummy_files/architectural_diagram.png
 
 # Process a slide deck offline
-chronicle ingest q3_planning.pptx
+chronicle ingest local_assets/dummy_files/q3_planning.pptx
 
-# View encrypted structured notes in a terminal table
-chronicle query --topic "Hackathon Planning"
+# View extracted structured notes in a terminal table
+chronicle list
+
+# View the raw JSON output for a specific ID
+chronicle view 1
 ```
 
 ---
