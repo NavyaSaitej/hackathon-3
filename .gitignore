@@ -1,0 +1,15 @@
+# Ignore GitLab Issues artifact and Hackathon Rules
+.speckit/gitlab_issues.md
+hackathon_overview.md
+partner_ai_starter_prompt.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+
+# Environment variables
+.env

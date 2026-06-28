@@ -1,24 +1,45 @@
 # Task List
 
-> *Amended by: [Tech Lead], [QA Engineer]*
-> *V2 Refined by: [Junior Developer Proxy], [Database Admin]*
+> *Aligned with GitLab Issues Tracker*
 
-## Phase 1: Foundation
-- [ ] **JD**: Run `uv venv` and `uv pip install typer rich pydantic sqlmodel llama-cpp-python faster-whisper`. Save to `requirements.txt`.
-- [ ] **DBA**: Create `src/database.py`. Configure SQLite engine with `PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;` for high concurrency and write speed.
-- [ ] **JD**: Create `src/main.py` using standard Typer boilerplate. Add `@app.command()` for `ingest`.
+## Member 1: AI & Core Backend (4 Tasks)
 
-## Phase 2: Transcription
-- [ ] **JD**: Create `src/audio_processor.py`. Use `faster_whisper.WhisperModel("tiny.en", device="cpu", compute_type="int8")`.
-- [ ] **QA**: Add tests passing corrupt audio files.
-- [ ] **DBA**: Log transcription metadata (duration, processing time) to an `analytics_local` table for debugging without telemetry.
+### 1. Offline Audio Ingestion Pipeline
+- [ ] Initialize Python virtual env (`uv venv`) and lock dependencies.
+- [ ] Implement `src/audio_processor.py`. Abstract `faster-whisper` behind a `BaseTranscriber` interface.
+- [ ] Test memory consumption during transcription using `memory_profiler`.
 
-## Phase 3: SLM Extraction
-- [ ] **JD**: Create `src/llm_transformer.py`. Download `Phi-3-mini-4k-instruct-q4.gguf` into a `models/` dir. 
-- [ ] **JD**: Use `Llama(model_path="models/phi3.gguf", n_ctx=4096, n_threads=4)`.
-- [ ] **DBA**: Define `JSON` column in `sqlmodel` for the raw schema output to ensure future flexibility if the schema changes. Add indexing on `title` and `timestamp`.
+### 2. SLM JSON Grammar Extraction
+- [ ] Implement `src/llm_transformer.py`.
+- [ ] Load GGUF model via `llama-cpp-python`.
+- [ ] Pass the strict JSON grammar string to the `create_chat_completion` call.
 
-## Phase 4: Polish & Packaging
-- [ ] **JD**: Use `rich.table.Table` to output the database contents in the `query` command.
-- [ ] **DevOps**: Write `build.spec` for PyInstaller. Run `pyinstaller --onefile src/main.py`.
-- [ ] **QA**: Disable network adapters and run the frozen executable.
+### 3. Encrypted SQLite Storage
+- [ ] Implement `src/database.py` using `sqlmodel` (wrapping SQLite).
+- [ ] Configure SQLite engine with `PRAGMA journal_mode=WAL;`.
+- [ ] Define `JSON` column in `sqlmodel` for the raw schema output.
+
+### 4. Air-Gap Validation (Backend & DB)
+- [ ] Inject a highly confusing transcript offline. Assert output remains strictly valid JSON.
+- [ ] Verify SQLite data insertion without locking errors.
+
+---
+
+## Member 2: CLI, UX & DevOps (4 Tasks)
+
+### 5. Typer CLI Architecture
+- [ ] Create `src/main.py` using standard Typer boilerplate. 
+- [ ] Add `@app.command()` for `ingest`, `query`, and `status`.
+
+### 6. Rich UI & Graceful Error Handling
+- [ ] Use `rich.table.Table` to output the database contents in the `query` command.
+- [ ] Catch `MemoryError` and OS interrupts (`Ctrl+C`) gracefully.
+
+### 7. Phase 3 Repo Audit (CI/CD & Binary)
+- [ ] Implement 10+ strict CI checks (Ruff, Mypy, Bandit, Vulture, Pytest).
+- [ ] Setup `.gitlab-ci.yml`.
+- [ ] Write `build.spec` for PyInstaller. Run `pyinstaller --onefile src/main.py`.
+
+### 8. Air-Gap Validation (CLI & Resilience)
+- [ ] Disable network adapters on the host machine. 
+- [ ] Run full E2E test from CLI and assert 0 network requests and perfect Rich layout.
