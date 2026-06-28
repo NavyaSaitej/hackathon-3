@@ -1,12 +1,14 @@
-from sqlmodel import Field, SQLModel, create_engine, Session
-from backend.config import get_settings
-from backend.logger import logger
-from backend.exceptions import DatabaseError
-from datetime import datetime
 import json
+from datetime import datetime
+
+from sqlmodel import Field, Session, SQLModel, create_engine
+
+from backend.config import get_settings
+from backend.exceptions import DatabaseError
+from backend.logger import logger
 
 
-class ChronicleNote(SQLModel, table=True):
+class ChronicleNote(SQLModel, table=True):  # type: ignore[call-arg]
     id: int | None = Field(default=None, primary_key=True)
     filename: str
     summary: str

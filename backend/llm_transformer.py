@@ -1,30 +1,25 @@
 import gc
 import json
-import os
-import subprocess
-import shutil
 import platform
-import urllib.request
-import urllib.error
-import time
 import re
-from pydantic import BaseModel, Field
+import shutil
+import subprocess
+import time
+import urllib.error
+import urllib.request
 from typing import List
+
+from pydantic import BaseModel, Field
+
 from backend.config import get_settings
-from backend.logger import logger
 from backend.exceptions import MemoryLimitExceededError
+from backend.logger import logger
 
 
 class StructuredNote(BaseModel):
-    summary: str = Field(
-        description="A concise 2-3 sentence overview of the provided data."
-    )
-    action_items: List[str] = Field(
-        description="List of implicit or explicit tasks identified."
-    )
-    key_entities: List[str] = Field(
-        description="People, companies, metrics, or major technical terms mentioned."
-    )
+    summary: str = Field(description="A concise 2-3 sentence overview of the provided data.")
+    action_items: List[str] = Field(description="List of implicit or explicit tasks identified.")
+    key_entities: List[str] = Field(description="People, companies, metrics, or major technical terms mentioned.")
 
 
 class OllamaOrchestrator:
@@ -48,13 +43,24 @@ class OllamaOrchestrator:
         try:
             if system == "Windows":
                 subprocess.run(
-                    ["winget", "install", "Ollama.Ollama", "--silent", "--accept-source-agreements", "--accept-package-agreements"],
+                    [
+                        "winget",
+                        "install",
+                        "Ollama.Ollama",
+                        "--silent",
+                        "--accept-source-agreements",
+                        "--accept-package-agreements",
+                    ],
                     check=True,
                 )
             elif system == "Darwin":
                 subprocess.run(["brew", "install", "ollama"], check=True)
             else:
-                subprocess.run(["curl -fsSL https://ollama.com/install.sh | sh"], shell=True, check=True)  # nosec
+                subprocess.run(
+                    ["curl -fsSL https://ollama.com/install.sh | sh"],
+                    shell=True,
+                    check=True,
+                )  # nosec
             logger.success("Ollama installed successfully.")
         except subprocess.CalledProcessError as e:
             logger.error(f"Failed to auto-install Ollama: {e}")
@@ -64,13 +70,13 @@ class OllamaOrchestrator:
     def ensure_running(model_name: str):
         if OllamaOrchestrator.is_running():
             return
-            
+
         if not OllamaOrchestrator.is_installed():
             OllamaOrchestrator.install()
-            
+
         logger.info("Starting Ollama background process...")
         subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        
+
         # Wait for it to come online
         for _ in range(15):
             if OllamaOrchestrator.is_running():
@@ -88,27 +94,33 @@ class RuleBasedExtractor:
     @staticmethod
     def extract(text: str) -> dict:
         logger.info("Engaging Offline NLP Heuristics Fallback Engine...")
-        
-        sentences = [s.strip() for s in re.split(r'[.!?]+', text) if s.strip()]
+
+        sentences = [s.strip() for s in re.split(r"[.!?]+", text) if s.strip()]
         summary = " ".join(sentences[:3]) + "." if sentences else "No readable text found."
-        
+
         action_items = []
-        action_keywords = [r'\bmust\b', r'\bshould\b', r'\bneed\b', r'\bto do\b', r'\baction\b']
+        action_keywords = [
+            r"\bmust\b",
+            r"\bshould\b",
+            r"\bneed\b",
+            r"\bto do\b",
+            r"\baction\b",
+        ]
         for sentence in sentences:
             if any(re.search(kw, sentence.lower()) for kw in action_keywords):
                 action_items.append(sentence)
         if not action_items:
             action_items = ["No explicit action items detected by heuristics."]
-            
-        words = re.findall(r'\b[A-Z][a-z]+\b', text)
+
+        words = re.findall(r"\b[A-Z][a-z]+\b", text)
         entities = list(set([w for w in words if len(w) > 2]))[:5]
         if not entities:
             entities = ["No entities detected."]
-            
+
         return {
             "summary": summary,
             "action_items": action_items[:5],
-            "key_entities": entities
+            "key_entities": entities,
         }
 
 
@@ -136,7 +148,7 @@ class LLMExtractor:
             user_prompt = f"Extract structured data from the following text:\n\n{text}"
 
             logger.info("Calling local Ollama API with strict JSON schema...")
-            
+
             try:
                 response = ollama.chat(
                     model=self.settings.ollama_model,
@@ -149,7 +161,10 @@ class LLMExtractor:
                 )
             except Exception as e:
                 if "404" in str(e):
-                    logger.warning(f"Ollama model '{self.settings.ollama_model}' not found. Please run 'ollama pull {self.settings.ollama_model}' in your terminal.")
+                    logger.warning(
+                        f"Ollama model '{self.settings.ollama_model}' not found. "
+                        f"Please run 'ollama pull {self.settings.ollama_model}' in your terminal."
+                    )
                 else:
                     logger.warning(f"Ollama server error: {e}.")
                 logger.warning("Falling back to Offline NLP Heuristics.")
@@ -157,15 +172,12 @@ class LLMExtractor:
 
             result_text = response["message"]["content"]
             result_text = result_text.strip()
-            
+
             logger.success("LLM Extraction via Ollama completed successfully.")
             return json.loads(result_text)
 
         except Exception as e:
             logger.error("Failed during LLM extraction.")
-            raise MemoryLimitExceededError(
-                "Failed during LLM inference or JSON parsing"
-            ) from e
+            raise MemoryLimitExceededError("Failed during LLM inference or JSON parsing") from e
         finally:
             gc.collect()
-

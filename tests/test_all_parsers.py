@@ -1,7 +1,12 @@
 import pytest
 from backend.parsers import IngestionRouter
 from backend.exceptions import ParserFailureError
+import os
 
+pytestmark = pytest.mark.skipif(
+    not os.path.exists("tests/dummy_files/test.txt"),
+    reason="Dummy files not found"
+)
 def test_parse_txt():
     text = IngestionRouter.process_file("tests/dummy_files/test.txt")
     assert "Hello from txt" in text
