@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: chronicle
+Version: 1.0.0
+Summary: Chronicle.cpp: The Academic Archivist CLI
+License-File: LICENSE
+Requires-Dist: typer[all]
+Requires-Dist: rich
+Requires-Dist: sqlmodel
+Requires-Dist: pydantic-settings
+Requires-Dist: loguru
+Requires-Dist: ollama
+Dynamic: license-file

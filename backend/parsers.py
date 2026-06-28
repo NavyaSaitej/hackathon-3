@@ -1,7 +1,7 @@
 import gc
 from pathlib import Path
-from src.logger import logger
-from src.exceptions import ParserFailureError
+from backend.logger import logger
+from backend.exceptions import ParserFailureError
 
 
 class IngestionRouter:
