@@ -10,6 +10,11 @@ default:
   tags:
     - local-runner
 
+variables:
+  GIT_CONFIG_COUNT: "1"
+  GIT_CONFIG_KEY_0: "safe.directory"
+  GIT_CONFIG_VALUE_0: "*"
+
 # 1. Semantic Commits
 check_semantic_commits:
   stage: lint
