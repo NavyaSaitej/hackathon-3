@@ -1,33 +1,38 @@
 # Development Plan
 
-> *Amended by: [Project Manager], [Risk Assessor]*
-> *V2 Refined by: [DevOps Engineer], [Agile Coach]*
+> *V3 Refined for Official Hackathon Deadlines*
 
-This plan breaks down the project implementation into logical, tested milestones. 
+## 📋 PHASE 1 — Plan & Spec (Deadline: Before 10 AM)
+- **Goal**: Full project scaffolding and repository documentation.
+- **Tasks**:
+  - Finalize SpecKit (Done).
+  - Write `README.md` outlining the Audio-to-Notes idea.
+  - Create repository Issues with assignees, estimates, and due dates.
+  - Draft the work-division plan.
 
-## Phase 1: Basic Working Foundation & Infrastructure
-- **Agile Scope**: 2 Hours. **Definition of Done**: DB initializes, CLI accepts commands and prints help.
-- **Steps**:
-  - Init `typer` CLI.
-  - Implement SQLCipher connection.
-  - **DevOps**: Setup `logging` module to write rotating logs to `~/.local/share/local-ai/logs/app.log`. Absolutely no stdout pollution unless asked.
+## 🚀 PHASE 2 — MVP (Deadline: Before Lunch Break)
+- **Goal**: Working CLI demo on real audio records.
+- **Tasks**:
+  - Implement Audio Ingestion (`faster-whisper`).
+  - Implement SLM Transformation (`llama.cpp` + `Phi-3-mini`).
+  - Implement SQLite Database storage via `sqlmodel`.
+  - Compile the CLI build version.
+  - Run the demo with Wi-Fi physically turned OFF.
 
-## Phase 2: Ingestion & Transcription
-- **Agile Scope**: 3 Hours. **Definition of Done**: Audio correctly converts to raw text in terminal.
-- **Steps**:
-  - Implement `faster-whisper`.
-  - Add robust audio chunking.
-  - **DevOps**: Wrap `ffmpeg` gracefully so the app auto-downloads the static binary if missing, ensuring seamless user experience.
-
-## Phase 3: SLM Transformation
-- **Agile Scope**: 4 Hours. **Definition of Done**: Raw text securely pipes into JSON and saves to DB.
-- **Steps**:
-  - Implement `llama-cpp-python` with strict JSON grammar.
-  - Chain transcription text -> Prompt -> SLM -> DB.
-  - **DevOps**: Implement memory garbage collection triggers between audio processing and SLM loading to prevent overlap memory spikes.
-
-## Phase 4: Polish, Testing, & Binary Packaging
-- **Agile Scope**: 3 Hours. **Definition of Done**: E2E tests pass, single executable generated.
-- **Steps**:
-  - **DevOps**: Use `PyInstaller` or `Nuitka` to freeze the entire Python application into a single standalone binary for Windows/Linux. This eliminates the need for users to have Python installed.
-  - Run the `stress_eval_loop.py` to bombard the CLI.
+## 🔍 PHASE 3 — Repo Audit (Deadline: Before 3 PM)
+- **Goal**: Perfect repository health with 10+ real CI checks.
+- **Tasks**:
+  - Ensure `README`, `CONTRIBUTING`, and `CHANGELOG` are polished.
+  - Set up local GitLab Runner `.gitlab-ci.yml`.
+  - Implement at least 10 **legitimate** pre-commit & CI checks:
+    1. Black/Ruff (Formatting)
+    2. Flake8/Ruff (Linting)
+    3. Mypy (Type-checking)
+    4. Bandit (Security Scan)
+    5. Vulture (Dead code)
+    6. Pytest (Unit tests)
+    7. Commitizen (Semantic commits check)
+    8. Safety (Dependency vulnerability scan)
+    9. Interrogate (Docstring coverage)
+    10. Isort (Import sorting)
+  - **CRITICAL**: No faking or stubbing jobs. All checks must execute real logic and pass.

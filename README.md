@@ -1,93 +1,80 @@
-# Hackaton3
+# 🧠 Local AI - Audio to Actionable Notes
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)]()
+[![Architecture](https://img.shields.io/badge/Architecture-CPU%20Only-orange)]()
+[![Network](https://img.shields.io/badge/Network-100%25%20Offline-success)]()
 
+> **An enterprise-grade, offline-first, CPU-optimized CLI application built for the CPU-First Hackathon.**
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 🎯 Executive Summary
+In high-security and enterprise environments, uploading sensitive meeting audio or proprietary discussions to cloud-based APIs (such as OpenAI or Anthropic) represents a severe data privacy violation. 
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+**Local AI** mitigates this risk entirely by providing a hyper-optimized, air-gapped CLI tool that processes unstructured data entirely on edge devices. 
 
-## Add your files
+Our application seamlessly:
+1. **Ingests** raw audio files (`.wav`, `.mp3`) securely from local storage.
+2. **Transcribes** the audio to text locally using a CTranslate2 backend (`faster-whisper`), engineered specifically for CPU execution.
+3. **Transforms** the unstructured transcript into a strict, structured JSON schema (Summaries, Action Items, Key Decisions) using an aggressively quantized Small Language Model (`Phi-3-mini`) via constrained grammar decoding.
+4. **Persists** the extracted intelligence into an encrypted SQLite database (`SQLCipher`), ensuring data at rest remains secure.
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+All processing occurs with a strict maximum memory footprint of 6GB RAM, proving that expensive GPU clusters are not required for high-fidelity data structuring.
 
+---
+
+## ⚙️ Core Technical Constraints (Hackathon Compliance)
+This project strictly adheres to the official hackathon rubric:
+- 🚫 **CPU-First**: Absolutely no GPU/CUDA dependencies. Inference relies solely on heavily optimized C++ backends (`llama.cpp`, `whisper.cpp`) running on CPU threads.
+- 📴 **Offline-First**: Guaranteed air-gap resiliency. The core pipeline is guaranteed to function flawlessly with the host machine's Wi-Fi adapters physically disabled.
+- 🔓 **Free & Open Source**: The entire codebase is licensed under **GNU GPLv3** (Strong Copyleft), ensuring maximum open-source freedom and compliance.
+
+---
+
+## 📂 The SpecKit (Documentation Architecture)
+Our engineering methodology, system architecture, UX design, and granular tasks are heavily documented in the `.speckit/` directory. We utilize a rigorous multi-agent workflow to enforce code quality and architectural integrity.
+
+| Document | Purpose |
+|----------|---------|
+| [📜 Constitution](.speckit/constitution.md) | Non-negotiable project rules (Air-gap, resource ceilings, licensing). |
+| [📝 Feature Spec](.speckit/specify.md) | Detailed I/O constraints, target JSON schemas, and CLI signatures. |
+| [🏗️ Architecture](.speckit/architecture.md) | Component sequence diagrams, Data flow, and IPC mechanisms. |
+| [🎨 CLI Design](.speckit/design.md) | Elegant, cognitive-load tested UX/UI flows using `Typer` and `Rich`. |
+| [📅 Dev Plan](.speckit/plan.md) | Strict timeline alignment to the Phase 1, 2, and 3 Hackathon deadlines. |
+| [✅ Task List](.speckit/tasks.md) | Granular implementation checklist and acceptance criteria. |
+| [🧪 Test Strategy](.speckit/testing_strategy.md) | Chaos engineering and air-gap E2E verification plans. |
+
+---
+
+## 📋 Work Division Plan
+To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2-person team structure is divided into distinct, non-blocking domains. 
+
+*(Note: Individual tasks, time estimates, and due dates are actively tracked in the GitLab Issues board).*
+
+| Domain | Primary Owner | Key Responsibilities |
+|--------|--------------|----------------------|
+| **AI & Core Backend** | **Member 1** | • Implement `faster-whisper` local ingestion pipeline.<br>• Compile JSON Grammar for `llama.cpp` constrained decoding.<br>• Design and migrate the `SQLModel` encrypted database schema. |
+| **CLI, UX & DevOps** | **Member 2** | • Develop the `Typer` & `Rich` interactive UI presentation.<br>• Implement robust exception handling and memory cleanup.<br>• Configure local GitLab CI Runner (10+ checks) & PyInstaller executable freezing. |
+
+---
+
+## 🚀 Usage (MVP Demo)
+*(To be compiled in Phase 2)*
+
+The application is designed to be as intuitive as standard UNIX tools.
+```bash
+# Process a meeting recording offline
+local-ai ingest confidential_meeting.mp3
+
+# View encrypted structured notes in a terminal table
+local-ai query --topic "Hackathon Planning"
+
+# Monitor system health, RAM usage, and cached models
+local-ai status
 ```
-cd existing_repo
-git remote add origin https://code.swecha.org/Navya_sai_tej/hackaton3.git
-git branch -M main
-git push -uf origin main
-```
 
-## Integrate with your tools
+---
 
-* [Set up project integrations](https://code.swecha.org/Navya_sai_tej/hackaton3/-/settings/integrations)
-
-## Collaborate with your team
-
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## 📜 License
+Distributed under the **GNU General Public License v3.0 (GPLv3)**. See `LICENSE` for more information.

@@ -14,7 +14,7 @@
 - **Thermal & Battery Awareness:** Dynamically detect available cores. Never use 100% of available CPU threads; reserve at least 1 core for OS stability. Implement thermal throttling safeguards (e.g., pause/yield during long processing). [Edge-Computing Architect]
 - **Memory Ceiling:** The combined memory footprint of the ASR (Whisper) and SLM (Llama.cpp) must NEVER exceed 6.0 GB of RAM.
 - **Quantization Mandate:** SLMs must use Q4_K_M or Q5_K_M GGUF quantization.
-- **License Purity:** All models and dependencies MUST be strictly open-source (MIT, Apache 2.0, or Llama-3 Community License). No restrictive commercial wrappers. [Open-Source Purist]
+- **License Purity & Copyleft:** All models and dependencies MUST be strictly open-source. The project codebase MUST be licensed under a **Strong Copyleft** license (e.g., GNU GPLv3) to comply with official hackathon rules. [Open-Source Purist]
 
 ## 3. Security, Privacy & Zero-Trust
 - **Input Sanitization:** Audio files must be treated as hostile.

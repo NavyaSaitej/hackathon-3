@@ -1,30 +1,31 @@
 # Hackathon Overview: "Local AI"
 
-This project focuses on building an *offline-first, CPU-optimized AI application* capable of transforming unstructured data (audio, text, documents, video, images) into highly structured, actionable datasets.
+🧠 **THE CPU-FIRST HACKATHON**
+_Build AI that runs anywhere._
 
-## Core Technical Constraints
+GPUs are scarce, costly and online. Most computing isn't. This is a demonstration that *the CPU is enough* — and the best apps keep working when the network doesn't.
 
-*   **Offline-First App:** The application must function reliably without a persistent internet connection. All core processing, vectorization, and inference must occur locally on the user's device.
-*   **CPU-First AI:** Models must be optimized for edge computing (e.g., ONNX, Quantized GGUF, or TensorFlow Lite). We are prioritizing efficiency and low-power hardware performance over cloud-based GPU scaling.
+*Your mission:* turn unstructured input (docs, images, audio, video, text) into clean *structured data*. Build it as a *CLI* app. Run inference on *CPU*. Make it work *offline*.
 
-## App Flow & AI Workflow
+## ⚙️ THE RULES
+• **CPU-first** — no GPU/CUDA. Declare your model + runtime (faster-whisper, llama.cpp CPU).
+• **Offline-first** — core feature works with *no cloud calls*. Demo must show it running with the network OFF.
+• **Free and Open Source Software** LICENSE file. Must be strong copyleft (e.g. GPLv3).
 
-1.  **Ingestion:** Support multi-modal inputs (Audio/Video via Transcribers, Documents/Images via OCR/VLM).
-2.  **Processing:** Local normalization and feature extraction.
-3.  **Transformation:** Using local small language models (SLMs) to map unstructured content to a defined JSON/Relational schema.
-4.  **Storage:** Persistence via local SQLite/Vector less DB for retrieval.
+## 📋 PHASE 1 — Plan & Spec (Submit Before 10AM)
+GitLab/Swecha repo with:
+• README with your idea
+• Spec kit
+• Issues w/ assignee + estimate + due date
+• Work-division plan
 
-## Hackathon Rules & Participation
+## 🚀 PHASE 2 — MVP (Submit before lunch Break)
+Working demo on real records:
+• CLI → submit CLI build version.
 
-*   **Code Integrity:** All AI inference must run locally. Use of external APIs (OpenAI, Anthropic) is strictly prohibited.
-*   **Data Handling:** The system must demonstrate graceful failure and caching when input processing latency occurs.
-*   **Dependency Limits:** Optimize for low-latency libraries (e.g., llama.cpp, transformers.js, Tesseract, or Whisper.cpp).
+## 🔍 PHASE 3 — Repo Audit (all green) (Submit before 3PM)
+Metadata + README, CONTRIBUTING, CHANGELOG + pre-commit & CI: formatting, lint, type-check, security scan, semantic commits etc. At least 10 checks, all run on local gitlab runner.
 
-## Validation Criteria
+⚠️ *Faking the checklist = malpractice.* Stub jobs (echo/print, exit 0, disabled steps) that look green without real checks → *disqualification or penalty.*
 
-Submissions will be evaluated based on:
-
-1.  **Model Performance:** Accuracy of structured extraction versus original data fidelity.
-2.  **Resource Efficiency:** CPU usage metrics and memory footprint during inference.
-3.  **Offline Resiliency:** Stability of the application when the system is completely air-gapped.
-4.  **Data Schema Alignment:** How well the unstructured input maps to the target structured output.
+Pick a hard, real problem. Make it run on a laptop with the Wi-Fi off. 🚀
