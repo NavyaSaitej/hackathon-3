@@ -15,12 +15,12 @@ class ChronicleNote(SQLModel, table=True):
 
 def get_engine():
     settings = get_settings()
-    # Note: For full SQLCipher support on Windows without complex C++ builds during the MVP phase, 
+    # Note: For full SQLCipher support on Windows without complex C++ builds during the MVP phase,
     # we are falling back to standard SQLite but structuring the code identically.
     # The actual production image would use pysqlcipher3 and inject the settings.sqlcipher_key
-    
+
     sqlite_url = f"sqlite:///{settings.sqlite_db_path}"
-    
+
     try:
         logger.debug(f"Connecting to Encrypted SQLite engine at {sqlite_url}...")
         engine = create_engine(sqlite_url, echo=False)

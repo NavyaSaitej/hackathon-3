@@ -26,7 +26,7 @@ class LLMExtractor:
                 raise MemoryLimitExceededError("Missing LLM dependency")
 
             logger.debug(f"Loading GGUF from {self.settings.gguf_model_path}")
-            
+
             # Using very conservative memory settings for CPU Hackathon limits
             self.model = Llama(
                 model_path=self.settings.gguf_model_path,
@@ -34,12 +34,12 @@ class LLMExtractor:
                 n_threads=4,
                 verbose=False
             )
-            
+
             system_prompt = "You are an expert archivist. Extract the requested JSON structure exactly."
             user_prompt = f"Extract structured data from the following text:\n\n{text}"
-            
+
             logger.info("Running CPU inference with strict JSON schema...")
-            
+
             response = self.model.create_chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -51,12 +51,12 @@ class LLMExtractor:
                 },
                 max_tokens=512
             )
-            
+
             result_text = response["choices"][0]["message"]["content"]
             logger.success("LLM Extraction completed successfully.")
             return json.loads(result_text)
-            
-        except Exception as e:
+
+        except Exception:
             logger.exception("Failed during LLM extraction.")
             raise
         finally:
