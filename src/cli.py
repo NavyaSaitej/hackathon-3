@@ -13,7 +13,7 @@ from sqlmodel import Session, select
 
 from src.orchestrator import process_file_offline
 from src.database import get_engine, ChronicleNote
-from src.exceptions import ChronicleException
+from src.exceptions import ChronicleBaseException
 
 app = typer.Typer(
     name="chronicle",
@@ -49,7 +49,7 @@ def ingest(
 
         try:
             result = process_file_offline(str(file_path))
-        except ChronicleException as e:
+        except ChronicleBaseException as e:
             console.print(
                 Panel(
                     str(e),
