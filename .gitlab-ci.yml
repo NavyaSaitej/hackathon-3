@@ -9,6 +9,8 @@ stages:
 default:
   tags:
     - local-runner
+  before_script:
+    - $env:PATH += ";C:\Users\navya\AppData\Local\Programs\Python\Python313;C:\Users\navya\AppData\Local\Programs\Python\Python313\Scripts"
 
 variables:
   GIT_CONFIG_COUNT: "1"
