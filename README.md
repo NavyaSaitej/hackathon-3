@@ -10,36 +10,39 @@
 ---
 
 ## 🎯 Executive Summary
-In high-security and enterprise environments, uploading sensitive meeting audio or proprietary discussions to cloud-based APIs (such as OpenAI or Anthropic) represents a severe data privacy violation. 
+In high-security and enterprise environments, uploading sensitive meeting audio, confidential documents, or proprietary whiteboard images to cloud-based APIs (such as OpenAI or Anthropic) represents a severe data privacy violation. 
 
-**Chronicle.cpp** mitigates this risk entirely by providing a hyper-optimized, air-gapped CLI tool that processes unstructured data entirely on edge devices. 
+**Chronicle.cpp** mitigates this risk entirely by providing a hyper-optimized, air-gapped CLI tool that processes unstructured **Omni-Modal** data entirely on edge devices. 
 
 Our application seamlessly:
-1. **Ingests** raw audio files (`.wav`, `.mp3`) securely from local storage.
-2. **Transcribes** the audio to text locally using a CTranslate2 backend (`faster-whisper`), engineered specifically for CPU execution.
-3. **Transforms** the unstructured transcript into a strict, structured JSON schema (Summaries, Action Items, Key Decisions) using an aggressively quantized Small Language Model (`Phi-3-mini`) via constrained grammar decoding.
-4. **Persists** the extracted intelligence into an encrypted SQLite database (`SQLCipher`), ensuring data at rest remains secure.
+1. **Ingests Omni-Modal Data**: Securely loads Audio (`.wav`, `.mp3`), Images (`.png`, `.jpg`), and Documents (`.pdf`, `.docx`, `.xlsx`, `.pptx`, `.md`, `.txt`).
+2. **Normalizes via Local Parsers**: 
+   - Audio is transcribed locally using a CTranslate2 backend (`faster-whisper`).
+   - Images are scanned using CPU-optimized OCR (`rapidocr-onnxruntime`).
+   - Documents are parsed using high-speed libraries (`PyMuPDF`, `python-docx`).
+3. **Transforms**: The flattened text is converted into a strict, structured JSON schema (Summaries, Action Items, Key Decisions) using an aggressively quantized Small Language Model (`Phi-3-mini`) via constrained grammar decoding.
+4. **Persists**: The extracted intelligence is saved into an encrypted SQLite database (`SQLCipher`), ensuring data at rest remains secure.
 
-All processing occurs with a strict maximum memory footprint of 6GB RAM, proving that expensive GPU clusters are not required for high-fidelity data structuring.
+All processing occurs sequentially with strict **manual garbage collection** to ensure a maximum memory footprint of 6GB RAM, proving that expensive GPU clusters are not required for high-fidelity data structuring.
 
 ---
 
 ## ⚙️ Core Technical Constraints (Hackathon Compliance)
 This project strictly adheres to the official hackathon rubric:
-- 🚫 **CPU-First**: Absolutely no GPU/CUDA dependencies. Inference relies solely on heavily optimized C++ backends (`llama.cpp`, `whisper.cpp`) running on CPU threads.
+- 🚫 **CPU-First**: Absolutely no GPU/CUDA dependencies. Inference relies solely on heavily optimized C++ backends (`llama.cpp`, `whisper.cpp`) and ONNX Runtimes.
 - 📴 **Offline-First**: Guaranteed air-gap resiliency. The core pipeline is guaranteed to function flawlessly with the host machine's Wi-Fi adapters physically disabled.
 - 🔓 **Free & Open Source**: The entire codebase is licensed under **GNU GPLv3** (Strong Copyleft), ensuring maximum open-source freedom and compliance.
 
 ---
 
 ## 📂 The SpecKit (Documentation Architecture)
-Our engineering methodology, system architecture, UX design, and granular tasks are heavily documented in the `.speckit/` directory. We utilize a rigorous multi-agent workflow to enforce code quality and architectural integrity.
+Our engineering methodology, system architecture, UX design, and granular tasks are heavily documented in the `.speckit/` directory. 
 
 | Document | Purpose |
 |----------|---------|
 | [📜 Constitution](.speckit/constitution.md) | Non-negotiable project rules (Air-gap, resource ceilings, licensing). |
-| [📝 Feature Spec](.speckit/specify.md) | Detailed I/O constraints, target JSON schemas, and CLI signatures. |
-| [🏗️ Architecture](.speckit/architecture.md) | Component sequence diagrams, Data flow, and IPC mechanisms. |
+| [📝 Feature Spec](.speckit/specify.md) | Detailed I/O constraints across all 10 file formats. |
+| [🏗️ Architecture](.speckit/architecture.md) | The Unified Ingestion Router and Memory Management constraints. |
 | [🎨 CLI Design](.speckit/design.md) | Elegant, cognitive-load tested UX/UI flows using `Typer` and `Rich`. |
 | [📅 Dev Plan](.speckit/plan.md) | Strict timeline alignment to the Phase 1, 2, and 3 Hackathon deadlines. |
 | [✅ Task List](.speckit/tasks.md) | Granular implementation checklist and acceptance criteria. |
@@ -54,7 +57,7 @@ To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2
 
 | Domain | Primary Owner | Key Responsibilities |
 |--------|--------------|----------------------|
-| **AI & Core Backend** | **Member 1** | • Implement `faster-whisper` local ingestion pipeline.<br>• Compile JSON Grammar for `llama.cpp` constrained decoding.<br>• Design and migrate the `SQLModel` encrypted database schema. |
+| **AI & Core Backend** | **Member 1** | • Implement Omni-Modal Parsers (`whisper`, `rapidocr`, `PyMuPDF`).<br>• Enforce Garbage Collection (`gc.collect`) between routing and LLM phases.<br>• Compile JSON Grammar for `llama.cpp` constrained decoding.<br>• Design the `SQLModel` encrypted schema. |
 | **CLI, UX & DevOps** | **Member 2** | • Develop the `Typer` & `Rich` interactive UI presentation.<br>• Implement robust exception handling and memory cleanup.<br>• Configure local GitLab CI Runner (10+ checks) & PyInstaller executable freezing. |
 
 ---
@@ -67,11 +70,14 @@ The application is designed to be as intuitive as standard UNIX tools.
 # Process a meeting recording offline
 chronicle ingest confidential_meeting.mp3
 
+# Process a whiteboard scan offline
+chronicle ingest architectural_diagram.png
+
+# Process a slide deck offline
+chronicle ingest q3_planning.pptx
+
 # View encrypted structured notes in a terminal table
 chronicle query --topic "Hackathon Planning"
-
-# Monitor system health, RAM usage, and cached models
-chronicle status
 ```
 
 ---

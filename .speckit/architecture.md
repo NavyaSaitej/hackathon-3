@@ -1,27 +1,21 @@
 # System Architecture
 
-> *V2 Refined by: [Systems Integrator]*
+## Core Pipeline (Sequential Execution)
+Due to the strict 6GB memory ceiling, all models **must be loaded sequentially**. Loading Whisper, RapidOCR, and Phi-3 simultaneously will cause an Out-Of-Memory (OOM) crash on edge hardware.
 
-## Component Diagram
-```mermaid
-graph TD
-    CLI[Typer CLI / src/main.py]
-    Audio[Audio Processor / faster-whisper]
-    SLM[LLM Transformer / llama.cpp]
-    DB[(Encrypted SQLite DB)]
+1. **Unified Ingestion Router**
+   - **Audio (`.wav`, `.mp3`)**: Loads `faster-whisper`. Extracts text. Unloads Whisper.
+   - **Images (`.png`, `.jpg`)**: Loads `rapidocr-onnxruntime`. Extracts text. Unloads RapidOCR.
+   - **Documents (`.pdf`, `.docx`, `.pptx`, `.xlsx`, `.md`, `.txt`)**: Uses `PyMuPDF`, `python-docx`, `python-pptx`, and `pandas`. (Negligible memory, but handles large docs via generators).
+2. **Context Normalization**
+   - The raw output from any parser is flattened into a single UTF-8 string buffer.
+3. **Structured Extraction**
+   - **LLM Initialization**: Loads `llama-cpp-python` with `Phi-3-mini-4k-instruct-q4.gguf`.
+   - Passes the flattened string and the strict JSON Grammar to the LLM.
+   - Unloads the LLM immediately upon completion.
+4. **Persistence**
+   - Validated JSON payload is encrypted and committed to SQLite via `sqlmodel` + `SQLCipher`.
 
-    CLI -->|Streamed Audio Path| Audio
-    Audio -->|Buffered Raw Transcript String| SLM
-    SLM -->|Parsed JSON| DB
-    CLI -->|Query| DB
-```
-
-## Data Flow & IPC (Systems Integrator)
-1. User provides local filepath.
-2. Typer validates file exists.
-3. **Memory Management**: To avoid loading massive 500MB audio files completely into RAM, the audio is streamed via a generator buffer into `faster-whisper`.
-4. `faster-whisper` decodes audio to text in memory, utilizing only standard IPC signals to prevent memory deadlocks.
-5. `llama-cpp` takes prompt + text + JSON Grammar.
-6. `llama-cpp` produces guaranteed JSON output (constrained by Llama grammar).
-7. Pydantic validates JSON dynamically.
-8. `sqlmodel` writes to SQLite using synchronous batching.
+## IPC and Memory Management
+- We use manual Garbage Collection (`import gc; gc.collect()`) after the `del` command to aggressively free RAM between the Ingestion and Extraction phases.
+- Typer handles routing and Rich handles UX. There is no background threading for AI inference; everything is strictly blocking.
