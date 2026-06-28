@@ -14,81 +14,60 @@ variables:
   GIT_CONFIG_COUNT: "1"
   GIT_CONFIG_KEY_0: "safe.directory"
   GIT_CONFIG_VALUE_0: "*"
+  GIT_DEPTH: "0"
+  GIT_STRATEGY: clone
 
-# 1. Semantic Commits
-check_semantic_commits:
+# 1. Lint Stage (Combined to prevent concurrent Git corruption on local runner)
+lint_all:
   stage: lint
   script:
     - echo "Checking semantic commits..."
     - $msg = git log -1 --pretty=%B
     - |
       if ($msg -notmatch '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?: .+') { Write-Error "Invalid commit message format - $msg"; exit 1 } else { Write-Output "Commit format is valid." }
+    - py -m pip install ruff vulture
+    - py -m ruff check backend frontend
+    - py -m vulture backend frontend --min-confidence 80
 
-# 2. Ruff Linter
-lint_code:
-  stage: lint
-  script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install ruff
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m ruff check backend frontend
-
-# 3. Ruff Format (Check)
-check_formatting:
-  stage: format
-  script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install ruff
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m ruff format --check backend frontend
-
-# 4. Mypy Type Check
+# 2. Type Check Stage
 type_check:
   stage: type_check
   script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install mypy sqlmodel pydantic sqlalchemy
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m mypy backend frontend --ignore-missing-imports
+    - py -m pip install mypy sqlmodel pydantic sqlalchemy
+    - py -m mypy backend frontend --ignore-missing-imports
 
-# 5. Vulture Dead Code
-dead_code_check:
-  stage: lint
-  script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install vulture
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m vulture backend frontend --min-confidence 80
-
-# 6. Isort Check
-import_sort_check:
+# 3. Format Stage (Combined)
+format_all:
   stage: format
   script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install isort
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m isort --check-only backend frontend
+    - py -m pip install ruff isort
+    - py -m ruff format --check backend frontend
+    - py -m isort --check-only backend frontend
 
-# 7. Bandit Security
-security_scan_bandit:
+# 4. Security Stage (Combined)
+security_all:
   stage: security
   script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install bandit
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m bandit -r backend frontend -ll
+    - py -m pip install bandit safety
+    - py -m bandit -r backend frontend -ll
+    - py -m safety check || echo "Ignoring safety vulnerabilities for now due to local environment constraints"
 
-# 8. Safety Dependency Scan
-security_scan_safety:
-  stage: security
-  script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install safety
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m safety check || echo "Ignoring safety vulnerabilities for now due to local environment constraints"
-
-# 9. Pytest
+# 5. Test Stage
 run_tests:
   stage: test
   script:
     - mkdir -Force local_assets | Out-Null
     - echo "SQLCIPHER_KEY=dummy_key_for_testing" > local_assets/.env
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install pytest httpx
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install -e .
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pytest tests/ -v
+    - py -m pip install pytest httpx
+    - py -m pip install -e .
+    - py -m pytest tests/ -v
 
-# 10. PyInstaller Build
+# 6. Build Stage
 build_binary:
   stage: build
   script:
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install pyinstaller
-    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pyinstaller --onefile --name chronicle frontend/cli.py
+    - py -m pip install pyinstaller
+    - py -m pyinstaller --onefile --name chronicle frontend/cli.py
   artifacts:
     paths:
       - dist/chronicle.exe
