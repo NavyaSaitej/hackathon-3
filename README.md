@@ -69,6 +69,11 @@ To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2
 The application is designed to be as intuitive as standard UNIX tools.
 
 ### Prerequisites
+The repository now leverages `pyproject.toml` to completely automate your local environment setup. 
+When you run `pip install -e .`, it will automatically fetch all parsing libraries (`faster-whisper`, `rapidocr`, `PyMuPDF`, etc.).
+
+Furthermore, Ollama is baked directly into the startup sequence!
+
 Before ingesting data, ensure your local Ollama engine has downloaded the Phi-3 model:
 ```bash
 ollama pull phi3

@@ -145,6 +145,7 @@ class LLMExtractor:
                         {"role": "user", "content": user_prompt},
                     ],
                     format=StructuredNote.model_json_schema(),
+                    options={"num_ctx": 2048},
                 )
             except Exception as e:
                 if "404" in str(e):

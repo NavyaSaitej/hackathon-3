@@ -11,7 +11,15 @@ dependencies = [
     "sqlmodel",
     "pydantic-settings",
     "loguru",
-    "ollama"
+    "ollama",
+    "faster-whisper",
+    "ffmpeg-python",
+    "rapidocr-onnxruntime",
+    "PyMuPDF",
+    "python-docx",
+    "python-pptx",
+    "pandas",
+    "openpyxl"
 ]
 
 [tool.setuptools]
