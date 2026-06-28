@@ -14,7 +14,7 @@ lint_code:
   script:
     - echo "Running flake8 linter..."
     - pip install flake8
-    - flake8 backend frontend --count --select=E9,F63,F7,F82 --show-source --statistics
+    - python -m flake8 backend frontend --count --select=E9,F63,F7,F82 --show-source --statistics
 
 run_tests:
   stage: test
@@ -22,14 +22,16 @@ run_tests:
     - echo "Running pytest suite (Offline Mock/Ollama)..."
     - pip install pytest httpx
     - pip install -e .
-    - pytest tests/ -v
+    - mkdir -p local_assets
+    - echo "sqlcipher_key=dummy_key_for_testing" > local_assets/.env
+    - python -m pytest tests/ -v
 
 security_scan:
   stage: security
   script:
     - echo "Running Bandit security scan..."
     - pip install bandit
-    - bandit -r backend frontend -ll
+    - python -m bandit -r backend frontend -ll
 
 build_wheel:
   stage: build
