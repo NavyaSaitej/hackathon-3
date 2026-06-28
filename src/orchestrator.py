@@ -4,10 +4,11 @@ from src.parsers import IngestionRouter
 from src.llm_transformer import LLMExtractor
 from src.database import save_note
 
+
 def process_file_offline(filepath: str):
     """
     Main orchestration function for Member 2 to consume via the Typer CLI.
-    Wrapped in a massive try-except block to guarantee no raw tracebacks 
+    Wrapped in a massive try-except block to guarantee no raw tracebacks
     leak to the user terminal, routing them perfectly to the logger.
     """
     try:
@@ -30,5 +31,7 @@ def process_file_offline(filepath: str):
         logger.error(f"Chronicle Pipeline Error: {str(ce)}")
         raise
     except Exception:
-        logger.critical("UNEXPECTED CATASTROPHIC FAILURE. See logs/chronicle_errors.log for full stack trace.")
+        logger.critical(
+            "UNEXPECTED CATASTROPHIC FAILURE. See logs/chronicle_errors.log for full stack trace."
+        )
         raise

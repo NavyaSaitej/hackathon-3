@@ -3,6 +3,7 @@ from pathlib import Path
 from src.logger import logger
 from src.exceptions import ConfigurationError
 
+
 class Settings(BaseSettings):
     sqlcipher_key: str
     sqlite_db_path: str = "local_chronicle.db"
@@ -11,6 +12,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
 
 def get_settings() -> Settings:
     try:

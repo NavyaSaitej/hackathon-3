@@ -11,7 +11,7 @@ logger.remove()
 # Add console handler (Colorized for development)
 logger.add(
     sys.stderr,
-    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
 )
 
 # Add offline file handler (Full stack traces for production debugging)
@@ -20,5 +20,5 @@ logger.add(
     rotation="10 MB",
     level="ERROR",
     backtrace=True,
-    diagnose=True
+    diagnose=True,
 )

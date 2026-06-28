@@ -6,10 +6,18 @@ from src.config import get_settings
 from src.logger import logger
 from src.exceptions import MemoryLimitExceededError
 
+
 class StructuredNote(BaseModel):
-    summary: str = Field(description="A concise 2-3 sentence overview of the provided data.")
-    action_items: List[str] = Field(description="List of implicit or explicit tasks identified.")
-    key_entities: List[str] = Field(description="People, companies, metrics, or major technical terms mentioned.")
+    summary: str = Field(
+        description="A concise 2-3 sentence overview of the provided data."
+    )
+    action_items: List[str] = Field(
+        description="List of implicit or explicit tasks identified."
+    )
+    key_entities: List[str] = Field(
+        description="People, companies, metrics, or major technical terms mentioned."
+    )
+
 
 class LLMExtractor:
     def __init__(self):
@@ -32,7 +40,7 @@ class LLMExtractor:
                 model_path=self.settings.gguf_model_path,
                 n_ctx=2048,
                 n_threads=4,
-                verbose=False
+                verbose=False,
             )
 
             system_prompt = "You are an expert archivist. Extract the requested JSON structure exactly."
@@ -43,13 +51,13 @@ class LLMExtractor:
             response = self.model.create_chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
+                    {"role": "user", "content": user_prompt},
                 ],
                 response_format={
                     "type": "json_object",
-                    "schema": StructuredNote.model_json_schema()
+                    "schema": StructuredNote.model_json_schema(),
                 },
-                max_tokens=512
+                max_tokens=512,
             )
 
             result_text = response["choices"][0]["message"]["content"]
@@ -60,15 +68,19 @@ class LLMExtractor:
                 result_text = result_text[3:]
             if result_text.endswith("```"):
                 result_text = result_text[:-3]
-                
+
             logger.success("LLM Extraction completed successfully.")
             return json.loads(result_text.strip())
 
-        except Exception:
+        except Exception as e:
             logger.exception("Failed during LLM extraction.")
-            raise
+            raise MemoryLimitExceededError(
+                "Failed during LLM inference or JSON parsing"
+            ) from e
         finally:
-            logger.warning("Enforcing strict Garbage Collection. Purging LLM from memory...")
+            logger.warning(
+                "Enforcing strict Garbage Collection. Purging LLM from memory..."
+            )
             if self.model is not None:
                 del self.model
                 self.model = None

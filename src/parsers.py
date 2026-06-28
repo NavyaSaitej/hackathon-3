@@ -3,6 +3,7 @@ from pathlib import Path
 from src.logger import logger
 from src.exceptions import ParserFailureError
 
+
 class IngestionRouter:
     """Routes files to the correct offline parser based on extension."""
 
@@ -17,23 +18,25 @@ class IngestionRouter:
         try:
             logger.info(f"Routing {filepath} to parser for extension '{ext}'")
 
-            if ext == '.pdf':
+            if ext == ".pdf":
                 text = IngestionRouter._parse_pdf(path)
-            elif ext in ['.txt', '.md']:
-                text = path.read_text(encoding='utf-8')
-            elif ext in ['.wav', '.mp3']:
+            elif ext in [".txt", ".md"]:
+                text = path.read_text(encoding="utf-8")
+            elif ext in [".wav", ".mp3"]:
                 text = IngestionRouter._parse_audio(path)
-            elif ext in ['.png', '.jpg']:
+            elif ext in [".png", ".jpg"]:
                 text = IngestionRouter._parse_image(path)
-            elif ext == '.docx':
+            elif ext == ".docx":
                 text = IngestionRouter._parse_docx(path)
-            elif ext == '.pptx':
+            elif ext == ".pptx":
                 text = IngestionRouter._parse_pptx(path)
-            elif ext == '.xlsx':
+            elif ext == ".xlsx":
                 text = IngestionRouter._parse_xlsx(path)
             else:
-                logger.warning(f"Unsupported file type: {ext}. Attempting raw string extraction.")
-                text = path.read_text(encoding='utf-8', errors='ignore')
+                logger.warning(
+                    f"Unsupported file type: {ext}. Attempting raw string extraction."
+                )
+                text = path.read_text(encoding="utf-8", errors="ignore")
 
             logger.info(f"Successfully extracted {len(text)} characters.")
             return text
@@ -48,6 +51,7 @@ class IngestionRouter:
     @staticmethod
     def _parse_pdf(path: Path) -> str:
         import fitz  # PyMuPDF
+
         logger.debug("Loading PyMuPDF...")
         doc = fitz.open(str(path))
         text = "".join([page.get_text() + "\n" for page in doc])

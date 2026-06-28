@@ -5,6 +5,7 @@ from src.exceptions import DatabaseError
 from datetime import datetime
 import json
 
+
 class ChronicleNote(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     filename: str
@@ -12,6 +13,7 @@ class ChronicleNote(SQLModel, table=True):
     action_items: str  # Stored as JSON string
     key_entities: str  # Stored as JSON string
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
 
 def get_engine():
     settings = get_settings()
@@ -30,6 +32,7 @@ def get_engine():
         logger.exception("Failed to initialize SQLite database.")
         raise DatabaseError("Database initialization failed") from e
 
+
 def save_note(note_data: dict, filename: str):
     engine = get_engine()
     try:
@@ -38,7 +41,7 @@ def save_note(note_data: dict, filename: str):
                 filename=filename,
                 summary=note_data.get("summary", ""),
                 action_items=json.dumps(note_data.get("action_items", [])),
-                key_entities=json.dumps(note_data.get("key_entities", []))
+                key_entities=json.dumps(note_data.get("key_entities", [])),
             )
             session.add(note)
             session.commit()
