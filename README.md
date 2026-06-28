@@ -17,11 +17,11 @@ In high-security and enterprise environments, uploading sensitive meeting audio,
 Our application seamlessly:
 1. **Ingests Omni-Modal Data**: Securely loads Audio (`.wav`, `.mp3`), Images (`.png`, `.jpg`), and Documents (`.pdf`, `.docx`, `.xlsx`, `.pptx`, `.md`, `.txt`).
 2. **Normalizes via Local Parsers**: 
-   - Audio is transcribed locally using a CTranslate2 backend (`faster-whisper`).
+   - Audio is pre-processed (`ffmpeg-python`) and transcribed locally using a CTranslate2 backend (`faster-whisper`).
    - Images are scanned using CPU-optimized OCR (`rapidocr-onnxruntime`).
    - Documents are parsed using high-speed libraries (`PyMuPDF`, `python-docx`).
 3. **Transforms**: The flattened text is converted into a strict, structured JSON schema (Summaries, Action Items, Key Decisions) using an aggressively quantized Small Language Model (`Phi-3-mini`) via constrained grammar decoding.
-4. **Persists**: The extracted intelligence is saved into an encrypted SQLite database (`SQLCipher`), ensuring data at rest remains secure.
+4. **Persists**: The extracted intelligence is saved into an encrypted SQLite database (`SQLCipher`), managed securely via `.env` keys.
 
 All processing occurs sequentially with strict **manual garbage collection** to ensure a maximum memory footprint of 6GB RAM, proving that expensive GPU clusters are not required for high-fidelity data structuring.
 
@@ -57,7 +57,7 @@ To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2
 
 | Domain | Primary Owner | Key Responsibilities |
 |--------|--------------|----------------------|
-| **AI & Core Backend** | **Member 1** | • Build the monolithic backend (`src/backend.py`) so state stays in one place.<br>• Implement all Parsers (`whisper`, `rapidocr`, `PyMuPDF`).<br>• Enforce Garbage Collection (`gc.collect`) between routing and LLM phases.<br>• Design the `SQLModel` encrypted schema. |
+| **AI & Core Backend** | **Member 1** | • Implement Omni-Modal Parsers (`whisper`, `rapidocr`, `PyMuPDF`).<br>• Enforce Garbage Collection (`gc.collect`) across backend module boundaries.<br>• Compile JSON Grammar for `llama.cpp` constrained decoding.<br>• Design the `SQLModel` encrypted schema and manage `.env` security. |
 | **CLI, UX & DevOps** | **Member 2** | • Develop the `Typer` (`src/main.py`) interactive UI presentation.<br>• Implement robust exception handling and memory cleanup.<br>• Configure local GitLab CI Runner (10+ checks) & PyInstaller executable freezing. |
 
 ---
