@@ -1,7 +1,8 @@
 import gc
 from pathlib import Path
-from backend.logger import logger
+
 from backend.exceptions import ParserFailureError
+from backend.logger import logger
 
 
 class IngestionRouter:
@@ -33,9 +34,7 @@ class IngestionRouter:
             elif ext == ".xlsx":
                 text = IngestionRouter._parse_xlsx(path)
             else:
-                logger.warning(
-                    f"Unsupported file type: {ext}. Attempting raw string extraction."
-                )
+                logger.warning(f"Unsupported file type: {ext}. Attempting raw string extraction.")
                 text = path.read_text(encoding="utf-8", errors="ignore")
 
             logger.info(f"Successfully extracted {len(text)} characters.")

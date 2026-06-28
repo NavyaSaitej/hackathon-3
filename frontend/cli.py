@@ -3,17 +3,17 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+from rich import box
 from rich.console import Console
+from rich.json import JSON
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
-from rich import box
-from rich.json import JSON
 from sqlmodel import Session, select
 
-from backend.orchestrator import process_file_offline
-from backend.database import get_engine, ChronicleNote
+from backend.database import ChronicleNote, get_engine
 from backend.exceptions import ChronicleBaseException
+from backend.orchestrator import process_file_offline
 
 app = typer.Typer(
     name="chronicle",
@@ -25,9 +25,7 @@ console = Console()
 
 @app.command()
 def ingest(
-    filepath: Optional[str] = typer.Argument(
-        None, help="The path to the file you want to ingest."
-    ),
+    filepath: Optional[str] = typer.Argument(None, help="The path to the file you want to ingest."),
 ):
     """
     Ingest a file into the Chronicle database. Supports PDF, DOCX, PPTX, XLSX, TXT, MD, WAV, MP3, PNG, JPG.
@@ -102,9 +100,7 @@ def list():
 
     for note in notes:
         summary_snippet = (
-            (note.summary[:60] + "...")
-            if note.summary and len(note.summary) > 60
-            else (note.summary or "")
+            (note.summary[:60] + "...") if note.summary and len(note.summary) > 60 else (note.summary or "")
         )
         table.add_row(
             str(note.id),
@@ -154,9 +150,7 @@ def delete(note_id: int = typer.Argument(..., help="The ID of the archive to del
     """
     Delete a specific archive from the database.
     """
-    typer.confirm(
-        f"Are you sure you want to permanently delete archive ID {note_id}?", abort=True
-    )
+    typer.confirm(f"Are you sure you want to permanently delete archive ID {note_id}?", abort=True)
 
     engine = get_engine()
     with Session(engine) as session:
@@ -174,9 +168,7 @@ def delete(note_id: int = typer.Argument(..., help="The ID of the archive to del
         session.delete(note)
         session.commit()
 
-    console.print(
-        f"[bold green]Archive ID {note_id} has been permanently deleted.[/bold green]"
-    )
+    console.print(f"[bold green]Archive ID {note_id} has been permanently deleted.[/bold green]")
 
 
 if __name__ == "__main__":

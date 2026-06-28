@@ -1,8 +1,8 @@
-from backend.logger import logger
-from backend.exceptions import ChronicleBaseException
-from backend.parsers import IngestionRouter
-from backend.llm_transformer import LLMExtractor
 from backend.database import save_note
+from backend.exceptions import ChronicleBaseException
+from backend.llm_transformer import LLMExtractor
+from backend.logger import logger
+from backend.parsers import IngestionRouter
 
 
 def process_file_offline(filepath: str):
@@ -31,7 +31,5 @@ def process_file_offline(filepath: str):
         logger.error(f"Chronicle Pipeline Error: {str(ce)}")
         raise
     except Exception:
-        logger.critical(
-            "UNEXPECTED CATASTROPHIC FAILURE. See logs/chronicle_errors.log for full stack trace."
-        )
+        logger.critical("UNEXPECTED CATASTROPHIC FAILURE. See logs/chronicle_errors.log for full stack trace.")
         raise
