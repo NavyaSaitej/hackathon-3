@@ -30,8 +30,12 @@ class LLMExtractor:
             try:
                 from llama_cpp import Llama
             except ImportError:
-                logger.error("llama-cpp-python not installed.")
-                raise MemoryLimitExceededError("Missing LLM dependency")
+                logger.warning("llama-cpp-python not installed. Falling back to Mock LLM for demo purposes.")
+                return {
+                    "summary": "This is a simulated summary because llama-cpp-python is missing.",
+                    "action_items": ["Install llama-cpp-python for real inference.", "Set up CMake."],
+                    "key_entities": ["Mock LLM", "Windows Build Tools"]
+                }
 
             logger.debug(f"Loading GGUF from {self.settings.gguf_model_path}")
 
