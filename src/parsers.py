@@ -25,6 +25,12 @@ class IngestionRouter:
                 text = IngestionRouter._parse_audio(path)
             elif ext in ['.png', '.jpg']:
                 text = IngestionRouter._parse_image(path)
+            elif ext == '.docx':
+                text = IngestionRouter._parse_docx(path)
+            elif ext == '.pptx':
+                text = IngestionRouter._parse_pptx(path)
+            elif ext == '.xlsx':
+                text = IngestionRouter._parse_xlsx(path)
             else:
                 logger.warning(f"Unsupported file type: {ext}. Attempting raw string extraction.")
                 text = path.read_text(encoding='utf-8', errors='ignore')
@@ -86,3 +92,38 @@ class IngestionRouter:
             logger.debug("Purging RapidOCR from memory.")
             del engine
         return text
+
+    @staticmethod
+    def _parse_docx(path: Path) -> str:
+        logger.debug("Loading python-docx...")
+        try:
+            from docx import Document
+        except ImportError:
+            raise ParserFailureError("python-docx not installed.")
+        doc = Document(str(path))
+        return "\n".join([para.text for para in doc.paragraphs])
+
+    @staticmethod
+    def _parse_pptx(path: Path) -> str:
+        logger.debug("Loading python-pptx...")
+        try:
+            from pptx import Presentation
+        except ImportError:
+            raise ParserFailureError("python-pptx not installed.")
+        prs = Presentation(str(path))
+        text = []
+        for slide in prs.slides:
+            for shape in slide.shapes:
+                if hasattr(shape, "text"):
+                    text.append(shape.text)
+        return "\n".join(text)
+
+    @staticmethod
+    def _parse_xlsx(path: Path) -> str:
+        logger.debug("Loading pandas for excel extraction...")
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ParserFailureError("pandas not installed.")
+        df = pd.read_excel(str(path))
+        return df.to_string()
