@@ -1,7 +1,9 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
-from backend.logger import logger
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from backend.exceptions import ConfigurationError
+from backend.logger import logger
 
 
 class Settings(BaseSettings):
@@ -20,7 +22,7 @@ def get_settings() -> Settings:
         if not Path("local_assets/.env").exists():
             logger.critical("No .env file found in local_assets/. Application cannot securely boot.")
             raise ConfigurationError(".env file missing")
-        return Settings()
+        return Settings()  # type: ignore[call-arg]
     except Exception as e:
         logger.exception("Configuration Validation Failed. Check .env variables.")
         raise ConfigurationError("Invalid or missing environment variables.") from e
