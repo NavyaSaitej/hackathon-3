@@ -1,8 +1,8 @@
-from src.logger import logger
-from src.exceptions import ChronicleBaseException
-from src.parsers import IngestionRouter
-from src.llm_transformer import LLMExtractor
-from src.database import save_note
+from backend.logger import logger
+from backend.exceptions import ChronicleBaseException
+from backend.parsers import IngestionRouter
+from backend.llm_transformer import LLMExtractor
+from backend.database import save_note
 
 
 def process_file_offline(filepath: str):

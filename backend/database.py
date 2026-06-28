@@ -1,7 +1,7 @@
 from sqlmodel import Field, SQLModel, create_engine, Session
-from src.config import get_settings
-from src.logger import logger
-from src.exceptions import DatabaseError
+from backend.config import get_settings
+from backend.logger import logger
+from backend.exceptions import DatabaseError
 from datetime import datetime
 import json
 

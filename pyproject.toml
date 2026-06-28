@@ -1,2 +1,25 @@
 [tool.ruff]
 line-length = 120
+
+[project]
+name = "chronicle"
+version = "1.0.0"
+description = "Chronicle.cpp: The Academic Archivist CLI"
+dependencies = [
+    "typer[all]",
+    "rich",
+    "sqlmodel",
+    "pydantic-settings",
+    "loguru",
+    "ollama"
+]
+
+[tool.setuptools]
+packages = ["backend", "frontend"]
+
+[tool.setuptools.package-dir]
+backend = "backend"
+frontend = "frontend"
+
+[project.scripts]
+chronicle = "frontend.cli:app"

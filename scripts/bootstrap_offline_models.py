@@ -6,17 +6,15 @@ from pathlib import Path
 MODELS_DIR = Path("models")
 MODELS_DIR.mkdir(exist_ok=True)
 
-# 1. Phi-3-mini GGUF for llama.cpp
-PHI3_URL = "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf"
-PHI3_PATH = MODELS_DIR / "Phi-3-mini-4k-instruct-q4.gguf"
-
-def download_file(url: str, dest: Path):
-    if dest.exists():
-        print(f"✅ {dest.name} already exists. Skipping.")
-        return
-    print(f"⬇️ Downloading {dest.name} (~2.4 GB)... This may take a while.")
-    urllib.request.urlretrieve(url, dest)
-    print(f"✅ Successfully downloaded {dest.name}")
+def pull_ollama_model():
+    print("⬇️ Pulling phi3 model via Ollama (~2.4 GB)... This may take a while.")
+    import subprocess
+    import shutil
+    if shutil.which("ollama"):
+        subprocess.run(["ollama", "pull", "phi3"])
+        print("✅ Successfully pulled phi3")
+    else:
+        print("⚠️ Ollama is not installed. Run 'winget install Ollama.Ollama' first.")
 
 def prime_whisper_cache():
     print("⬇️ Priming faster-whisper local cache...")
@@ -38,7 +36,7 @@ def prime_ocr_cache():
 
 if __name__ == "__main__":
     print("🚀 Bootstrapping Chronicle.cpp Offline Models...")
-    download_file(PHI3_URL, PHI3_PATH)
+    pull_ollama_model()
     prime_whisper_cache()
     prime_ocr_cache()
     print("\n🎉 All models downloaded! You are now ready to disable Wi-Fi and develop 100% offline.")

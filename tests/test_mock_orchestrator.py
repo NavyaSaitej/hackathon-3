@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from src.orchestrator import process_file_offline
+from backend.orchestrator import process_file_offline
 
-@patch('src.orchestrator.LLMExtractor')
-@patch('src.orchestrator.IngestionRouter.process_file')
+@patch('backend.orchestrator.LLMExtractor')
+@patch('backend.orchestrator.IngestionRouter.process_file')
 def test_full_pipeline_mock(mock_process_file, mock_extractor_class):
     mock_process_file.return_value = "This is a test document about Project X."
     
@@ -24,7 +24,7 @@ def test_full_pipeline_mock(mock_process_file, mock_extractor_class):
     
     # Check Database via SQLModel
     from sqlmodel import Session, select
-    from src.database import get_engine, ChronicleNote
+    from backend.database import get_engine, ChronicleNote
     
     engine = get_engine()
     with Session(engine) as session:

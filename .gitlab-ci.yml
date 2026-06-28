@@ -1,0 +1,53 @@
+stages:
+  - lint
+  - test
+  - security
+  - build
+  - deploy
+
+default:
+  tags:
+    - local-runner
+
+lint_code:
+  stage: lint
+  script:
+    - echo "Running flake8 linter..."
+    - pip install flake8
+    - flake8 backend frontend --count --select=E9,F63,F7,F82 --show-source --statistics
+
+run_tests:
+  stage: test
+  script:
+    - echo "Running pytest suite (Offline Mock/Ollama)..."
+    - pip install pytest httpx
+    - pip install -e .
+    - pytest tests/ -v
+
+security_scan:
+  stage: security
+  script:
+    - echo "Running Bandit security scan..."
+    - pip install bandit
+    - bandit -r backend frontend -ll
+
+build_wheel:
+  stage: build
+  script:
+    - echo "Building python wheel..."
+    - pip install build
+    - python -m build
+  artifacts:
+    paths:
+      - dist/*.whl
+    expire_in: 1 week
+
+deploy_package:
+  stage: deploy
+  script:
+    - echo "Deploying locally..."
+    - echo "Simulating deployment freeze..."
+    - pip install pyinstaller
+    - echo "Done!"
+  environment:
+    name: production

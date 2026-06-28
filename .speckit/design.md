@@ -57,7 +57,7 @@ Upon completion, a subtle "reveal" animation prints the final panel, satisfying 
 │                                                 │
 │ 🎯 Action Items:                                │
 │  • Alice: Setup GitHub repo                     │
-│  • Bob: Download Phi-3 model                    │
+│  • Bob: Run 'ollama pull phi3'                  │
 │                                                 │
 │ 💡 Decision: We will use SQLCipher for DB.      │
 │                                                 │
@@ -80,7 +80,7 @@ When the user runs: `chronicle status`
 │                                              │
 │ 📦 Models Cached:                            │
 │  ✓ faster-whisper-tiny.en (140MB)            │
-│  ✓ phi-3-mini-4k.Q4_K_M (2.2GB)              │
+│  ✓ phi3 via Ollama (2.4GB)                   │
 ╰──────────────────────────────────────────────╯
 ```
 
