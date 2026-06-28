@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:8000/generate",
+  "payload": {
+    "url": "https://www.youtube.com/watch?v=Dq6dBoFor00"
+  },
+  "headers": {
+    "Content-Type": "application/json",
+    "X-App-Secret": "quickcards-dev-secret"
+  },
+  "workers": 8,
+  "interval": 60
+}
