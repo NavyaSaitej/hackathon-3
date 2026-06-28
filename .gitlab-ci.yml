@@ -81,6 +81,8 @@ security_scan_safety:
 run_tests:
   stage: test
   script:
+    - mkdir -p local_assets
+    - echo "SQLCIPHER_KEY=dummy_key_for_testing" > local_assets/.env
     - pip install pytest httpx
     - pip install -e .
     - pytest tests/ -v
