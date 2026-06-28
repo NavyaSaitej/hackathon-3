@@ -73,7 +73,7 @@ class LLMExtractor:
             return json.loads(result_text.strip())
 
         except Exception as e:
-            logger.exception("Failed during LLM extraction.")
+            logger.error("Failed during LLM extraction.")
             raise MemoryLimitExceededError(
                 "Failed during LLM inference or JSON parsing"
             ) from e
