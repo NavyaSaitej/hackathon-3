@@ -9,9 +9,6 @@ stages:
 default:
   tags:
     - local-runner
-  before_script:
-    - Set-Alias python "C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe"
-
 variables:
   GIT_CONFIG_COUNT: "1"
   GIT_CONFIG_KEY_0: "safe.directory"
@@ -27,32 +24,32 @@ lint_all:
     - $msg = git log -1 --pretty=%B
     - |
       if ($msg -notmatch '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?: .+') { Write-Error "Invalid commit message format - $msg"; exit 1 } else { Write-Output "Commit format is valid." }
-    - python -m pip install ruff vulture
-    - python -m ruff check backend frontend
-    - python -m vulture backend frontend --min-confidence 80
+    - py -m pip install ruff vulture
+    - py -m ruff check backend frontend
+    - py -m vulture backend frontend --min-confidence 80
 
 # 2. Type Check Stage
 type_check:
   stage: type_check
   script:
-    - python -m pip install mypy sqlmodel pydantic sqlalchemy
-    - python -m mypy backend frontend --ignore-missing-imports
+    - py -m pip install mypy sqlmodel pydantic sqlalchemy
+    - py -m mypy backend frontend --ignore-missing-imports
 
 # 3. Format Stage (Combined)
 format_all:
   stage: format
   script:
-    - python -m pip install ruff isort
-    - python -m ruff format --check backend frontend
-    - python -m isort --check-only backend frontend
+    - py -m pip install ruff isort
+    - py -m ruff format --check backend frontend
+    - py -m isort --check-only backend frontend
 
 # 4. Security Stage (Combined)
 security_all:
   stage: security
   script:
-    - python -m pip install bandit safety
-    - python -m bandit -r backend frontend -ll
-    - python -m safety check || echo "Ignoring safety vulnerabilities for now due to local environment constraints"
+    - py -m pip install bandit safety
+    - py -m bandit -r backend frontend -ll
+    - py -m safety check || echo "Ignoring safety vulnerabilities for now due to local environment constraints"
 
 # 5. Test Stage
 run_tests:
@@ -60,16 +57,16 @@ run_tests:
   script:
     - mkdir -Force local_assets | Out-Null
     - echo "SQLCIPHER_KEY=dummy_key_for_testing" > local_assets/.env
-    - python -m pip install pytest httpx
-    - python -m pip install -e .
-    - python -m pytest tests/ -v
+    - py -m pip install pytest httpx
+    - py -m pip install -e .
+    - py -m pytest tests/ -v
 
 # 6. Build Stage
 build_binary:
   stage: build
   script:
-    - python -m pip install pyinstaller
-    - python -m pyinstaller --onefile --name chronicle frontend/cli.py
+    - py -m pip install pyinstaller
+    - py -m pyinstaller --onefile --name chronicle frontend/cli.py
   artifacts:
     paths:
       - dist/chronicle.exe
