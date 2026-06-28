@@ -16,7 +16,8 @@ check_semantic_commits:
   script:
     - echo "Checking semantic commits..."
     - $msg = git log -1 --pretty=%B
-    - if ($msg -notmatch '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?: .+') { Write-Error "Invalid commit message format - $msg"; exit 1 } else { Write-Output "Commit format is valid." }
+    - |
+      if ($msg -notmatch '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?: .+') { Write-Error "Invalid commit message format - $msg"; exit 1 } else { Write-Output "Commit format is valid." }
 
 # 2. Ruff Linter
 lint_code:
