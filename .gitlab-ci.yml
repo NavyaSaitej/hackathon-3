@@ -9,8 +9,6 @@ stages:
 default:
   tags:
     - local-runner
-  before_script:
-    - $env:PATH += ";C:\Users\navya\AppData\Local\Programs\Python\Python313;C:\Users\navya\AppData\Local\Programs\Python\Python313\Scripts"
 
 variables:
   GIT_CONFIG_COUNT: "1"
@@ -30,50 +28,50 @@ check_semantic_commits:
 lint_code:
   stage: lint
   script:
-    - python -m pip install ruff
-    - python -m ruff check backend frontend
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install ruff
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m ruff check backend frontend
 
 # 3. Ruff Format (Check)
 check_formatting:
   stage: format
   script:
-    - python -m pip install ruff
-    - python -m ruff format --check backend frontend
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install ruff
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m ruff format --check backend frontend
 
 # 4. Mypy Type Check
 type_check:
   stage: type_check
   script:
-    - python -m pip install mypy sqlmodel pydantic sqlalchemy
-    - python -m mypy backend frontend --ignore-missing-imports
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install mypy sqlmodel pydantic sqlalchemy
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m mypy backend frontend --ignore-missing-imports
 
 # 5. Vulture Dead Code
 dead_code_check:
   stage: lint
   script:
-    - python -m pip install vulture
-    - python -m vulture backend frontend --min-confidence 80
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install vulture
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m vulture backend frontend --min-confidence 80
 
 # 6. Isort Check
 import_sort_check:
   stage: format
   script:
-    - python -m pip install isort
-    - python -m isort --check-only backend frontend
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install isort
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m isort --check-only backend frontend
 
 # 7. Bandit Security
 security_scan_bandit:
   stage: security
   script:
-    - python -m pip install bandit
-    - python -m bandit -r backend frontend -ll
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install bandit
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m bandit -r backend frontend -ll
 
 # 8. Safety Dependency Scan
 security_scan_safety:
   stage: security
   script:
-    - python -m pip install safety
-    - python -m safety check || echo "Ignoring safety vulnerabilities for now due to local environment constraints"
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install safety
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m safety check || echo "Ignoring safety vulnerabilities for now due to local environment constraints"
 
 # 9. Pytest
 run_tests:
@@ -81,16 +79,16 @@ run_tests:
   script:
     - mkdir -Force local_assets | Out-Null
     - echo "SQLCIPHER_KEY=dummy_key_for_testing" > local_assets/.env
-    - python -m pip install pytest httpx
-    - python -m pip install -e .
-    - python -m pytest tests/ -v
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install pytest httpx
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install -e .
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pytest tests/ -v
 
 # 10. PyInstaller Build
 build_binary:
   stage: build
   script:
-    - python -m pip install pyinstaller
-    - python -m pyinstaller --onefile --name chronicle frontend/cli.py
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pip install pyinstaller
+    - C:\Users\navya\AppData\Local\Programs\Python\Python313\python.exe -m pyinstaller --onefile --name chronicle frontend/cli.py
   artifacts:
     paths:
       - dist/chronicle.exe
