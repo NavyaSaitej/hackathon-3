@@ -57,8 +57,8 @@ To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2
 
 | Domain | Primary Owner | Key Responsibilities |
 |--------|--------------|----------------------|
-| **AI & Core Backend** | **Member 1** | • Implement Omni-Modal Parsers (`whisper`, `rapidocr`, `PyMuPDF`).<br>• Enforce Garbage Collection (`gc.collect`) between routing and LLM phases.<br>• Compile JSON Grammar for `llama.cpp` constrained decoding.<br>• Design the `SQLModel` encrypted schema. |
-| **CLI, UX & DevOps** | **Member 2** | • Develop the `Typer` & `Rich` interactive UI presentation.<br>• Implement robust exception handling and memory cleanup.<br>• Configure local GitLab CI Runner (10+ checks) & PyInstaller executable freezing. |
+| **AI & Core Backend** | **Member 1** | • Build the monolithic backend (`src/backend.py`) so state stays in one place.<br>• Implement all Parsers (`whisper`, `rapidocr`, `PyMuPDF`).<br>• Enforce Garbage Collection (`gc.collect`) between routing and LLM phases.<br>• Design the `SQLModel` encrypted schema. |
+| **CLI, UX & DevOps** | **Member 2** | • Develop the `Typer` (`src/main.py`) interactive UI presentation.<br>• Implement robust exception handling and memory cleanup.<br>• Configure local GitLab CI Runner (10+ checks) & PyInstaller executable freezing. |
 
 ---
 
