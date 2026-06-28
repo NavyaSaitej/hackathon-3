@@ -2,44 +2,33 @@
 
 > *Aligned with GitLab Issues Tracker*
 
-## Member 1: AI Core & Omni-Modal Data Pipeline (4 Tasks)
+## Member 1: AI Core & Omni-Modal Data Pipeline (5 Tasks)
 
-### 1. Unified Ingestion Router (Audio, OCR, Docs)
+### 1. Diagnostics & Configuration Management
+- [ ] Implement `src/config.py` using `pydantic-settings` to validate `.env`.
+- [ ] Implement `src/logger.py` using `loguru` to capture traces to terminal and `logs/chronicle_errors.log`.
+- [ ] Define custom hierarchy in `src/exceptions.py`.
+
+### 2. Unified Ingestion Router (Audio, OCR, Docs)
 - [ ] Implement `src/parsers.py`. Abstract `faster-whisper`, `rapidocr`, `PyMuPDF`, and `python-docx`.
+- [ ] Wrap all parsers in `try...except` throwing custom exceptions for `loguru` to catch.
 - [ ] Add `ffmpeg-python` step to normalize audio inputs to 16kHz mono before Whisper processing.
-- [ ] Test memory consumption during OCR and Audio transcription.
 
-### 2. LLM JSON Extraction & Memory Management
+### 3. LLM JSON Extraction & Memory Management
 - [ ] Implement `src/llm_transformer.py`.
 - [ ] Load GGUF model via `llama-cpp-python`.
-- [ ] **Critical**: Implement explicit `del model; gc.collect()` logic at the module boundary to ensure RAM is freed.
+- [ ] **Critical**: Implement explicit `del model; gc.collect()` logic inside a `finally:` block.
 
-### 3. Encrypted SQLite Storage (SQLCipher + Dotenv)
+### 4. Encrypted SQLite Storage (SQLCipher)
 - [ ] Implement `src/database.py` using `sqlmodel` (wrapping SQLite).
-- [ ] Integrate `python-dotenv` so `SQLCIPHER_KEY` is loaded from a local `.env` file securely.
+- [ ] Inject `SQLCIPHER_KEY` from `src/config.py`.
 - [ ] Define `JSON` column in `sqlmodel` for the raw schema output.
 
-### 4. Air-Gap Validation (Backend & DB)
+### 5. Air-Gap Validation (Backend & Diagnostics)
 - [ ] Inject a complex PDF and a Whiteboard image offline. Assert output is valid JSON.
-- [ ] Verify SQLite encryption keys are working and insertion is lock-free.
+- [ ] Inject a corrupted file to verify `loguru` accurately logs the trace offline.
 
 ---
 
 ## Member 2: CLI, UX & DevOps (4 Tasks)
-
-### 5. Typer CLI Architecture
-- [ ] Create `src/main.py` using standard Typer boilerplate. 
-- [ ] Add `@app.command()` for `ingest`, `query`, and `status`. Provide proper routing to Member 1's `src/parsers.py`.
-
-### 6. Rich UI & Graceful Error Handling
-- [ ] Use `rich.table.Table` to output the database contents.
-- [ ] Catch `MemoryError` gracefully.
-
-### 7. Phase 3 Repo Audit (CI/CD & Binary)
-- [ ] Implement 10+ strict CI checks (Ruff, Mypy, Bandit, Vulture, Pytest).
-- [ ] Setup `.gitlab-ci.yml`.
-- [ ] Write `build.spec` for PyInstaller. Run `pyinstaller --onefile src/main.py`.
-
-### 8. Air-Gap Validation (CLI Output)
-- [ ] Disable network adapters. 
-- [ ] Run E2E test from CLI using a `.png` and `.wav` file, asserting 0 network requests.
+*(CLI Tasks remain unchanged)*
