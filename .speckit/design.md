@@ -33,7 +33,7 @@ Colors must not solely rely on Red/Green pairs to ensure full accessibility for 
 ### A. The "Ingest" Flow (Audio to JSON)
 **Step 1: Initiation**
 ```text
-[🌀] Initializing Local AI engine... (Loading Whisper to RAM)
+[🌀] Initializing Chronicle.cpp engine... (Loading Whisper to RAM)
 ```
 
 **Step 2: Processing (Live Progress Bar)**
@@ -67,7 +67,7 @@ Upon completion, a subtle "reveal" animation prints the final panel, satisfying 
 
 ### B. The "Status" Flow (Data Viz Specialist)
 Instead of just printing "RAM: 4GB", we use unicode sparklines to visualize real-time resource pressure.
-When the user runs: `local-ai status`
+When the user runs: `chronicle status`
 
 ```text
 ╭─ 📊 System Health ───────────────────────────╮
@@ -85,5 +85,5 @@ When the user runs: `local-ai status`
 ```
 
 ## 5. Micro-Interactions
-- **Smart Autocomplete**: Hitting `TAB` after `local-ai ingest` will automatically list `.wav` and `.mp3` files in the current directory.
+- **Smart Autocomplete**: Hitting `TAB` after `chronicle ingest` will automatically list `.wav` and `.mp3` files in the current directory.
 - **Graceful Interrupts**: Hitting `Ctrl+C` does not print `KeyboardInterrupt`. It smoothly stops the progress bar and prints `[⏹] Process halted safely by user. Memory cleared.`

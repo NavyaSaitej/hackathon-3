@@ -1,12 +1,12 @@
 # Hackathon-3 Constitution
 
-> This document defines the absolute, non-negotiable rules for the Local AI project. All development MUST adhere strictly to these principles.
+> This document defines the absolute, non-negotiable rules for the Chronicle.cpp project. All development MUST adhere strictly to these principles.
 > *Amended by: [Security Auditor], [Performance Optimizer], [Data Privacy Officer]*
 > *V2 Refined by: [Edge-Computing Architect], [Open-Source Purist], [Accessibility Advocate]*
 
 ## 1. Offline First & Air-Gapped Resiliency
 - **Absolute Air-Gap:** The application must operate flawlessly without an internet connection. Any HTTP/Socket requests attempting to reach external IPs will result in immediate build failure.
-- **Dependency Sandboxing & OS Hygiene:** All libraries must bundle their own dependencies. App data and models must be stored in standard OS-specific localized directories (e.g., `~/.local/share/local-ai` or `%APPDATA%`), leaving zero footprint elsewhere. [Open-Source Purist]
+- **Dependency Sandboxing & OS Hygiene:** All libraries must bundle their own dependencies. App data and models must be stored in standard OS-specific localized directories (e.g., `~/.local/share/chronicle` or `%APPDATA%`), leaving zero footprint elsewhere. [Open-Source Purist]
 - **Resilient Fallbacks:** If a model file is missing or corrupted, the system must degrade gracefully with a human-readable CLI prompt instructing the user on how to sideload the model.
 
 ## 2. CPU-Optimized Inference & Resource Ceilings

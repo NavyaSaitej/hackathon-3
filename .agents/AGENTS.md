@@ -1,7 +1,7 @@
-# Local AI — Agent Handoff Guide & Workspace Rules
+# Chronicle.cpp — Agent Handoff Guide & Workspace Rules
 
 ## Project Overview
-**Local AI** is an offline-first, CPU-optimized application that transforms unstructured audio into structured JSON data.
+**Chronicle.cpp** is an offline-first, CPU-optimized application that transforms unstructured audio into structured JSON data.
 It strictly adheres to the CPU-First Hackathon rules: **No GPU, 100% Offline (Air-Gapped), GPLv3 License**.
 
 ## Architecture Boundaries

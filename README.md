@@ -1,4 +1,4 @@
-# 🧠 Local AI - Audio to Actionable Notes
+# 🧠 Chronicle.cpp - Offline Knowledge Distillation
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)]()
@@ -12,7 +12,7 @@
 ## 🎯 Executive Summary
 In high-security and enterprise environments, uploading sensitive meeting audio or proprietary discussions to cloud-based APIs (such as OpenAI or Anthropic) represents a severe data privacy violation. 
 
-**Local AI** mitigates this risk entirely by providing a hyper-optimized, air-gapped CLI tool that processes unstructured data entirely on edge devices. 
+**Chronicle.cpp** mitigates this risk entirely by providing a hyper-optimized, air-gapped CLI tool that processes unstructured data entirely on edge devices. 
 
 Our application seamlessly:
 1. **Ingests** raw audio files (`.wav`, `.mp3`) securely from local storage.
@@ -65,13 +65,13 @@ To ensure rapid execution across the strict Phase 2 and Phase 3 deadlines, the 2
 The application is designed to be as intuitive as standard UNIX tools.
 ```bash
 # Process a meeting recording offline
-local-ai ingest confidential_meeting.mp3
+chronicle ingest confidential_meeting.mp3
 
 # View encrypted structured notes in a terminal table
-local-ai query --topic "Hackathon Planning"
+chronicle query --topic "Hackathon Planning"
 
 # Monitor system health, RAM usage, and cached models
-local-ai status
+chronicle status
 ```
 
 ---

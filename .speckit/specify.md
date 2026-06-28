@@ -1,4 +1,4 @@
-# Local AI CLI App - Feature Specification
+# Chronicle.cpp CLI App - Feature Specification
 
 > *Amended by: [Product Manager], [UX Expert]*
 > *V2 Refined by: [Machine Learning Engineer], [Compliance Officer]*
@@ -14,7 +14,7 @@ A robust CLI application that ingests unstructured audio files, performs offline
 - **Validation Constraints**: Max file size: 500 MB. Max duration: 120 minutes.
 
 ## 3. Processing Pipeline & UX Flow
-1. **Command Invocation**: User runs `local-ai ingest meeting.mp3`.
+1. **Command Invocation**: User runs `chronicle ingest meeting.mp3`.
 2. **Ingestion & UI**: `[STATUS] Validating and downsampling audio file...`
 3. **Offline Transcription**: `faster-whisper` (CTranslate2).
 4. **Information Extraction**:
@@ -42,7 +42,7 @@ A robust CLI application that ingests unstructured audio files, performs offline
 ```
 
 ## 5. CLI Command Signatures
-- `local-ai ingest <filepath> [--model <model_path>] [--export-json]`
-- `local-ai query [--topic <string>] [--assignee <string>]`
-- `local-ai audit-log` (Compliance: Shows data access and deletion events)
-- `local-ai status`
+- `chronicle ingest <filepath> [--model <model_path>] [--export-json]`
+- `chronicle query [--topic <string>] [--assignee <string>]`
+- `chronicle audit-log` (Compliance: Shows data access and deletion events)
+- `chronicle status`
